@@ -69,6 +69,17 @@ Implantar uma arquitetura **100% Serverless na AWS** (Região `sa-east-1` — S�
 | **Observabilidade** | **Amazon CloudWatch** | Coleta nativa de logs de invocação e métricas de execução. |
 | **Segurança** | **AWS IAM** | Role de execução aplicando o Princípio do Menor Privilégio. |
 
+
+---
+
+## 📸 Evidências da Implantação
+
+* **Tabela NoSQL (Amazon DynamoDB):** [`Docs/DynamoDB- Pint 1.png`](Docs/DynamoDB-%20Pint%201.png)
+* **Backend Serverless (AWS Lambda):** [`Docs/Teste Lambda 02.png`](Docs/Teste%20Lambda%2002.png)
+* **Endpoints REST (Amazon API Gateway):** [`Docs/API Gateway_02.png`](Docs/API%20Gateway_02.png)
+* **Hospedagem Estática (Amazon S3):** [`Docs/memory-game-lab-vagner-santos_final.png`](Docs/memory-game-lab-vagner-santos_final.png)
+
+
 ---
 
 ## 📐 Decisões de Arquitetura (ADRs)
@@ -104,47 +115,6 @@ graph LR
     D -->|PutItem / Query / Scan| F[(Amazon DynamoDB)]
     D -->|Logs & Métricas| G[Amazon CloudWatch]
 ```
-
----
-
-## 🛠️ Tecnologias AWS Utilizadas
-
-| Serviço AWS | Categoria | Finalidade no Projeto |
-| :--- | :--- | :--- |
-| **Amazon S3** | Armazenamento | Hospedagem estática do frontend e entrega de ativos web. |
-| **Amazon API Gateway** | Rede e Entrega | Gerenciamento das rotas REST (`/resultado`, `/ranking`, `/jogador/{nome}`) e CORS. |
-| **AWS Lambda** | Computação | Execução da lógica de negócio, validação de payload e geração de hashes/UUIDs. |
-| **Amazon DynamoDB** | Banco de Dados | Armazenamento NoSQL de partidas e consulta de histórico/placar. |
-| **AWS IAM** | Segurança | Controle de acesso granular via política em linha restrita ao ARN da tabela. |
-| **Amazon CloudWatch** | Monitoramento | Registro automático de logs (`START`, `INFO`, `END`) e diagnóstico de falhas. |
-
----
-
-## 📸 Evidências dos Testes
-
-### Evidência 1 — Bucket S3 (Frontend Estático)
-![Bucket S3](Docs/memory-game-lab-vagner-santos_final.png)
-
-### Evidência 2 — Tabela DynamoDB (Persistência NoSQL)
-![Tabela DynamoDB](Docs/DynamoDB-%20Pint%201.png)
-
-### Evidência 3 — IAM Role (Menor Privilégio)
-![IAM Role](Docs/Política%20memory-game-dynamodb-policy-vagner-santos%20atualizada..png)
-
-### Evidência 4 — Função AWS Lambda (Código Python)
-![Função Lambda](Docs/LambdaMemoryGame.png)
-
-### Evidência 5 — Teste Lambda (Status 200 OK)
-![Teste Lambda](Docs/Teste%20Lambda%2002.png)
-
-### Evidência 6 — API Gateway (Recursos e Métodos)
-![Rotas API Gateway](Docs/API%20Gateway.png)
-
-### Evidência 7 — Deploy da API (Estágio `prod`)
-![Deploy API Gateway](Docs/API%20Gateway_02.png)
-
-### Evidência 8 — Aplicação em Execução e Registro no DynamoDB
-![Aplicação Finalizada](Docs/Finalizado.jpg)
 
 ---
 
@@ -254,15 +224,6 @@ Neste laboratório, os recursos foram provisionados manualmente via Console AWS 
   * **Partition Key (`playerId`):** Hash MD5 do nome do jogador (distribuição uniforme de partições).
   * **Sort Key (`gameId`):** UUID único da partida (permite múltiplas partidas por jogador e consultas eficientes via `Query`).
 * **AWS IAM:** Role de execução dedicada com política em linha restrita apenas às ações necessárias (`dynamodb:PutItem`, `dynamodb:GetItem`, `dynamodb:Scan`, `dynamodb:Query`) sobre a tabela específica do projeto, além do envio de logs ao **Amazon CloudWatch**.
-
----
-
-## 📸 Evidências da Implantação
-
-* **Tabela NoSQL (Amazon DynamoDB):** [`Docs/DynamoDB- Pint 1.png`](Docs/DynamoDB-%20Pint%201.png)
-* **Backend Serverless (AWS Lambda):** [`Docs/Teste Lambda 02.png`](Docs/Teste%20Lambda%2002.png)
-* **Endpoints REST (Amazon API Gateway):** [`Docs/API Gateway_02.png`](Docs/API%20Gateway_02.png)
-* **Hospedagem Estática (Amazon S3):** [`Docs/memory-game-lab-vagner-santos_final.png`](Docs/memory-game-lab-vagner-santos_final.png)
 
 ---
 
