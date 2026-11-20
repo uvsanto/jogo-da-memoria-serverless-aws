@@ -16,15 +16,9 @@ Aplicação web interativa desenvolvida e implantada com arquitetura **100% Serv
 
 ---
 
-## 🧭 Navegação Rápida & Apresentação Executiva
-- 📊 **[Apresentação Executiva em PDF (15 Slides)](Docs/AWS_Serverless_Architecture_Blueprint.pdf)**
-- 📊 — Pitch deck visual com anatomia da arquitetura serverless, fluxo de CORS (*preflight*), otimização de *Warm Starts*, modelagem NoSQL (PK/SK + GSI), menor privilégio IAM e evolução para produção.
-- 📋 **[Descrição do Desafio & Baseline](#-descrição-didática-do-desafio)** — Objetivos propostos e comparativo de estado AS-IS vs. TO-BE.
-- 📸 **[Evidências da Implantação](#-evidências-da-implantação)** — Capturas validadas do DynamoDB, AWS Lambda, API Gateway e Amazon S3.
-- 📐 **[Decisões de Arquitetura (ADRs) & Topologia](#-decisões-de-arquitetura-adrs)** — Justificativas técnicas, trade-offs e diagrama Mermaid.js.
-- 🎓 **[Alinhamento SAA-C03 & Governança](#-alinhamento-e-cobertura-aws-saa-c03)** — Cobertura de exame, Well-Architected Framework, LGPD, AWS CAF e FinOps.
-- 🚀 **[Roadmap de Produção & IaC](#-roadmap-de-melhorias-e-boas-práticas)** — CloudFront + OAC, GSI no DynamoDB, WAF e Infraestrutura como Código.
+## 📊 Apresentação Executiva da Arquitetura
 
+> **Acesse o Pitch Deck Completo:** [**Apresentação Executiva em PDF (15 Slides)**](Docs/AWS_Serverless_Architecture_Blueprint.pdf) — *Material visual detalhando a anatomia da arquitetura 100% serverless, fluxo de CORS (preflight), otimização de Warm Starts, modelagem NoSQL (PK/SK + GSI), menor privilégio IAM e evolução para produção.*
 ---
 
 ## 📋 Descrição Didática do Desafio
@@ -262,8 +256,6 @@ Durante a implantação e os testes de integração ponta a ponta, foram diagnos
 
 ## ✅ Conclusão
 
-
 A arquitetura *serverless* implantada utilizando **Amazon S3**, **Amazon API Gateway**, **AWS Lambda** e **Amazon DynamoDB** atendeu integralmente aos requisitos funcionais e não funcionais do desafio, proporcionando escalabilidade automática, alta disponibilidade nativa e otimização máxima de custos. O projeto consolida os fundamentos práticos exigidos para a certificação **AWS Certified Solutions Architect — Associate (SAA-C03)** e segue os pilares do **AWS Well-Architected Framework**.
-=======
 
 
