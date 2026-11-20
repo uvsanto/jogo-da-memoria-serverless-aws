@@ -262,4 +262,8 @@ Durante a implantação e os testes de integração ponta a ponta, foram diagnos
 
 ## ✅ Conclusão
 
+<<<<<<< Updated upstream
 A arquitetura *serverless* implantada utilizando **Amazon S3**, **Amazon API Gateway**, **AWS Lambda** e **Amazon DynamoDB** atendeu integralmente aos requisitos funcionais e não funcionais do desafio, proporcionando escalabilidade automática, alta disponibilidade nativa e otimização máxima de custos. O projeto consolida os fundamentos práticos exigidos para a certificação **AWS Certified Solutions Architect — Associate (SAA-C03)** e segue os pilares do **AWS Well-Architected Framework**.
+=======
+A arquitetura *serverless* implantada utilizando **Amazon S3**, **Amazon API Gateway**, **AWS Lambda** e **Amazon DynamoDB** atendeu integralmente aos requisitos funcionais e não funcionais do desafio, proporcionando escalabilidade automática, alta disponibilidade nativa e otimização máxima de custos. O projeto consolida os fundamentos práticos exigidos para a certificação **AWS Certified Solutions Architect — Associate (SAA-C03)** e segue os pilares do **AWS Well-Architected Framework**.
+>>>>>>> Stashed changes
