@@ -74,10 +74,10 @@ Implantar uma arquitetura **100% Serverless na AWS** (Região `sa-east-1` — S�
 
 ## 📸 Evidências da Implantação
 
-* **Tabela NoSQL (Amazon DynamoDB):** [`Docs/DynamoDB- Pint 1.png`](Docs/DynamoDB-%20Pint%201.png)
-* **Backend Serverless (AWS Lambda):** [`Docs/Teste Lambda 02.png`](Docs/Teste%20Lambda%2002.png)
-* **Endpoints REST (Amazon API Gateway):** [`Docs/API Gateway_02.png`](Docs/API%20Gateway_02.png)
-* **Hospedagem Estática (Amazon S3):** [`Docs/memory-game-lab-vagner-santos_final.png`](Docs/memory-game-lab-vagner-santos_final.png)
+- **Tabela NoSQL (Amazon DynamoDB):** [`Docs/dynamodb-itens.png`](https://github.com/uvsanto/jogo-da-memoria-serverless-aws/blob/main/Docs/dynamodb-itens.png)
+- **Backend Serverless (AWS Lambda):** [lambda-teste.png](Docs/lambda-teste.png)
+- **Endpoints REST (Amazon API Gateway):** [api-gateway-recursos.png](Docs/api-gateway-recursos.png)
+- **Hospedagem Estática (Amazon S3):** [s3-bucket.png](Docs/s3-bucket.png)
 
 
 ---
@@ -89,10 +89,12 @@ Implantar uma arquitetura **100% Serverless na AWS** (Região `sa-east-1` — S�
 * **Justificativa:** Baixo custo, alta durabilidade/disponibilidade nativa e simplicidade operacional para entrega de ativos estáticos (`HTML`, `CSS`, `JS`).
 
 ### ADR-02 — Persistência de Dados NoSQL
-* **Decisão:** Utilizar **Amazon DynamoDB** em modo de capacidade **On-Demand**, modelado com chave primária composta:
-  * **Partition Key (`playerId`):** Hash MD5 do nome do jogador em minúsculas (evita *hot partitions* e padroniza buscas).
-  * **Sort Key (`gameId`):** Identificador único `UUIDv4` por partida.
-* **Justificativa:** Escalabilidade automática para cargas intermitentes sem necessidade de provisionamento prévio de RCUs/WCUs, garantindo gravações diretas (`PutItem`) e consultas eficientes por jogador (`Query`).
+
+- **Decisão:** Utilizar **Amazon DynamoDB** em modo de capacidade **On-Demand**, com chave primária composta:
+  * **Partition Key (`playerId`):** hash MD5 do nome do jogador em minúsculas.
+  * **Sort Key (`gameId`):** `UUIDv4` único por partida.
+- **Justificativa:** Escalabilidade automática para cargas intermitentes, sem provisionar RCUs/WCUs. A chave composta permite várias partidas por jogador e consultas eficientes por jogador via `Query`.
+- **Limitações assumidas (escopo didático):** o `playerId` derivado do nome é uma simplificação do laboratório. Jogadores com o mesmo nome compartilham o mesmo histórico, e um jogador muito ativo concentra acessos em uma única partição. Em produção, usar UUID ou o identificador de um provedor de identidade (ex.: Amazon Cognito).
 
 ### ADR-03 — Camada de Computação Backend
 * **Decisão:** Utilizar **AWS Lambda** (Runtime Python 3.12, 128 MB de memória) inicializando o cliente `boto3` fora do `lambda_handler`.
@@ -140,22 +142,26 @@ graph LR
 
 ### 1. Princípios do AWS Well-Architected Framework
 
-| Pilar Well-Architected | Maturidade | Práticas Validadas |
-| :--- | :---: | :--- |
-| **Excelência Operacional** | 75% | Logs centralizados no CloudWatch, documentação arquitetural e *troubleshooting* estruturado. |
-| **Segurança** | 80% | Política IAM inline restrita ao ARN da tabela e controle de origem via CORS. |
-| **Confiabilidade** | 85% | Infraestrutura gerenciada com redundância Multi-AZ nativa e tratamento de exceções no Python. |
-| **Eficiência de Performance** | 75% | Reaproveitamento de conexão `boto3` (*Warm Start*) e chaves hash MD5 no DynamoDB. |
-| **Otimização de Custos** | 90% | Arquitetura sem ociosidade (*pay-per-request*) e limpeza total dos recursos após validação. |
-| **Sustentabilidade** | 85% | Computação efêmera sob demanda, eliminando instâncias EC2 subutilizadas 24/7. |
+| Pilar Well-Architected        | Avaliação | Práticas Validadas                                                              |
+| ----------------------------- | --------- | ------------------------------------------------------------------------------- |
+| **Excelência Operacional**    | Parcial   | Logs no CloudWatch e documentação; sem alarmes nem IaC.                         |
+| **Segurança**                 | Parcial   | Política IAM restrita à tabela e CORS; falta HTTPS no frontend, WAF e autenticação. |
+| **Confiabilidade**            | Atendido  | Serviços gerenciados com redundância nativa e tratamento de exceções no Python. |
+| **Eficiência de Performance** | Parcial   | Cliente `boto3` fora do handler; `Scan` no ranking não escala.                  |
+| **Otimização de Custos**      | Atendido  | Modelo serverless/pay-per-request e exclusão dos recursos após a validação.     |
+| **Sustentabilidade**          | Atendido  | Computação sob demanda, sem instâncias ociosas.                                 |
 
-> **Maturidade Geral Estimada:** **81,7%**
+> *Autoavaliação qualitativa, feita pelo autor com base nos pilares do AWS Well-Architected Framework.*
 
-### 2. Conformidade com a LGPD (Lei Geral de Proteção de Dados)
-* **Minimização de Dados:** Coleta restrita ao apelido/nome informado pelo jogador e métricas da partida, sem dados sensíveis.
-* **Pseudonimização:** Conversão do nome do jogador em hash MD5 (`playerId`) para indexação na chave de partição.
-* **Controle de Acesso e Rastreabilidade:** Acesso ao banco restrito à role do Lambda e auditoria de operações via CloudWatch Logs.
-* **Transparência Técnica (Nota de Segurança):** As chamadas à API trafegam criptografadas via **HTTPS (TLS)** no API Gateway. O frontend estático no S3 opera em **HTTP** por limitação nativa do *Static Website Hosting* (adequado ao escopo de dados públicos do laboratório; em produção, utiliza-se **Amazon CloudFront** para HTTPS ponta a ponta).
+### 2. Boas Práticas Alinhadas à LGPD
+
+Este laboratório não pretende atestar conformidade legal. Os pontos abaixo mostram práticas técnicas alinhadas à lei, dentro do escopo didático:
+
+- **Minimização de Dados:** coleta restrita ao nome/apelido informado pelo jogador e às métricas da partida, sem dados sensíveis.
+- **Controle de Acesso e Rastreabilidade:** acesso ao banco restrito à role do Lambda, com registro de invocações no CloudWatch Logs.
+- **Criptografia em Trânsito (API):** as chamadas à API trafegam via HTTPS (TLS) no API Gateway. O frontend no S3 opera em HTTP, limitação do *Static Website Hosting* (adequada a dados públicos de laboratório; em produção, usar **Amazon CloudFront** para HTTPS ponta a ponta).
+- **Fora do escopo do laboratório:** base legal, política de privacidade, definição de retenção e atendimento a direitos do titular. Em produção, o `playerName` também exigiria avaliação como dado pessoal.
+- **Observação:** o `playerId` (MD5 do nome) é apenas um identificador técnico e **não constitui pseudonimização**, pois o `playerName` é armazenado em texto claro no mesmo item.
 
 > **Conformidade Geral Estimada:** **70%**
 
@@ -223,7 +229,7 @@ Neste laboratório, os recursos foram provisionados manualmente via Console AWS 
 * **Amazon DynamoDB:** Tabela NoSQL em modo **On-Demand** utilizando chave primária composta:
   * **Partition Key (`playerId`):** Hash MD5 do nome do jogador (distribuição uniforme de partições).
   * **Sort Key (`gameId`):** UUID único da partida (permite múltiplas partidas por jogador e consultas eficientes via `Query`).
-* **AWS IAM:** Role de execução dedicada com política em linha restrita apenas às ações necessárias (`dynamodb:PutItem`, `dynamodb:GetItem`, `dynamodb:Scan`, `dynamodb:Query`) sobre a tabela específica do projeto, além do envio de logs ao **Amazon CloudWatch**.
+- **AWS IAM:** Role de execução dedicada com política em linha restrita às ações necessárias (`dynamodb:PutItem`, `dynamodb:Query` e `dynamodb:Scan`) sobre a tabela específica do projeto, além da política gerenciada `AWSLambdaBasicExecutionRole` para envio de logs ao **Amazon CloudWatch**.
 
 ---
 
@@ -245,6 +251,14 @@ Durante a implantação e os testes de integração ponta a ponta, foram diagnos
 ├── css/             # Estilização da interface (style.css)
 ├── js/              # Lógica do jogo (game.js) e endpoint da API (config.js)
 ├── lambda/          # Código fonte da função serverless (lambda_function.py)
+TABELA_NOME = os.environ['lambda_function.py']
+
+# ...
+
+def gerar_player_id(nome):
+    import hashlib
+    return hashlib.md5(nome.lower().encode()).hexdigest()
+
 └── index.html       # Página principal da aplicação
 ```
 
