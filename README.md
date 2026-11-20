@@ -10,15 +10,15 @@
 
 # 🧠 Jogo da Memória Serverless na AWS — Laboratório AWS
 
-![Estudo de Caso de Arquitetura Serverless na AWS](Docs/Estudo_de_Caso_de_Arquitetura_3.png)
+![Estudo de Caso de Arquitetura Serverless na AWS](Docs/Estudo_de_Caso_de_Arquitetura.png)
 
 Aplicação web interativa desenvolvida e implantada com arquitetura **100% Serverless na AWS** (Região `sa-east-1` — São Paulo), integrando hospedagem estática, API REST gerenciada, computação orientada a eventos e banco de dados NoSQL de baixa latência.
 
 ---
 
 ## 🧭 Navegação Rápida & Apresentação Executiva
-
-- 📊 **[Apresentação Executiva em PDF (15 Slides)](Docs/AWS_Serverless_Architecture_Blueprint_2.pdf)** — Pitch deck visual com anatomia da arquitetura serverless, fluxo de CORS (*preflight*), otimização de *Warm Starts*, modelagem NoSQL (PK/SK + GSI), menor privilégio IAM e evolução para produção.
+- 📊 **[Apresentação Executiva em PDF (15 Slides)](Docs/AWS_Serverless_Architecture_Blueprint.pdf)**
+- 📊 — Pitch deck visual com anatomia da arquitetura serverless, fluxo de CORS (*preflight*), otimização de *Warm Starts*, modelagem NoSQL (PK/SK + GSI), menor privilégio IAM e evolução para produção.
 - 📋 **[Descrição do Desafio & Baseline](#-descrição-didática-do-desafio)** — Objetivos propostos e comparativo de estado AS-IS vs. TO-BE.
 - 📸 **[Evidências da Implantação](#-evidências-da-implantação)** — Capturas validadas do DynamoDB, AWS Lambda, API Gateway e Amazon S3.
 - 📐 **[Decisões de Arquitetura (ADRs) & Topologia](#-decisões-de-arquitetura-adrs)** — Justificativas técnicas, trade-offs e diagrama Mermaid.js.
@@ -68,16 +68,16 @@ Implantar uma arquitetura **100% Serverless na AWS** (Região `sa-east-1` — S�
 ## 📸 Evidências da Implantação
 
 ### Tabela NoSQL (Amazon DynamoDB)
-![Tabela DynamoDB com os itens das partidas](Docs/dynamodb-itens.png)
+![Tabela DynamoDB com os itens das partidas](Docs/DynamoDB-%20Pint%201.png)
 
 ### Backend Serverless (AWS Lambda)
-![Teste da função Lambda com resposta 200](Docs/lambda-teste.png)
+![Teste da função Lambda com resposta 200](Docs/Teste%20Lambda%2002.png)
 
 ### Endpoints REST (Amazon API Gateway)
-![Recursos e métodos da API REST](Docs/api-gateway-recursos.png)
+![Recursos e métodos da API REST](Docs/API%20Gateway_02.png)
 
 ### Hospedagem Estática (Amazon S3)
-![Bucket S3 com os arquivos do jogo](Docs/s3-bucket.png)
+![Bucket S3 com os arquivos do jogo](Docs/memory-game-lab-vagner-santos_final.png)
 
 ---
 
@@ -262,8 +262,8 @@ Durante a implantação e os testes de integração ponta a ponta, foram diagnos
 
 ## ✅ Conclusão
 
-<<<<<<< Updated upstream
+
 A arquitetura *serverless* implantada utilizando **Amazon S3**, **Amazon API Gateway**, **AWS Lambda** e **Amazon DynamoDB** atendeu integralmente aos requisitos funcionais e não funcionais do desafio, proporcionando escalabilidade automática, alta disponibilidade nativa e otimização máxima de custos. O projeto consolida os fundamentos práticos exigidos para a certificação **AWS Certified Solutions Architect — Associate (SAA-C03)** e segue os pilares do **AWS Well-Architected Framework**.
 =======
-A arquitetura *serverless* implantada utilizando **Amazon S3**, **Amazon API Gateway**, **AWS Lambda** e **Amazon DynamoDB** atendeu integralmente aos requisitos funcionais e não funcionais do desafio, proporcionando escalabilidade automática, alta disponibilidade nativa e otimização máxima de custos. O projeto consolida os fundamentos práticos exigidos para a certificação **AWS Certified Solutions Architect — Associate (SAA-C03)** e segue os pilares do **AWS Well-Architected Framework**.
->>>>>>> Stashed changes
+
+
