@@ -74,10 +74,17 @@ Implantar uma arquitetura **100% Serverless na AWS** (Região `sa-east-1` — S�
 
 ## 📸 Evidências da Implantação
 
-- **Tabela NoSQL (Amazon DynamoDB):** [`Docs/dynamodb-itens.png`](https://github.com/uvsanto/jogo-da-memoria-serverless-aws/blob/main/Docs/dynamodb-itens.png)
-- **Backend Serverless (AWS Lambda):** [lambda-teste.png](Docs/lambda-teste.png)
-- **Endpoints REST (Amazon API Gateway):** [api-gateway-recursos.png](Docs/api-gateway-recursos.png)
-- **Hospedagem Estática (Amazon S3):** [s3-bucket.png](Docs/s3-bucket.png)
+### Tabela NoSQL (Amazon DynamoDB)
+![Tabela DynamoDB com os itens das partidas](Docs/dynamodb-itens.png)
+
+### Backend Serverless (AWS Lambda)
+![Teste da função Lambda com resposta 200](Docs/lambda-teste.png)
+
+### Endpoints REST (Amazon API Gateway)
+![Recursos e métodos da API REST](Docs/api-gateway-recursos.png)
+
+### Hospedagem Estática (Amazon S3)
+![Bucket S3 com os arquivos do jogo](Docs/s3-bucket.png)
 
 
 ---
