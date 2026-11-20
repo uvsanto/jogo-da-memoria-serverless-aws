@@ -18,7 +18,29 @@ Aplicação web interativa desenvolvida e implantada com arquitetura **100% Serv
 
 ## 📊 Apresentação Executiva da Arquitetura
 
-> **Acesse o Pitch Deck Completo:** [**Apresentação Executiva em PDF (15 Slides)**](Docs/AWS_Serverless_Architecture_Blueprint.pdf) — *Material visual detalhando a anatomia da arquitetura 100% serverless, fluxo de CORS (preflight), otimização de Warm Starts, modelagem NoSQL (PK/SK + GSI), menor privilégio IAM e evolução para produção.*
+> **Acesse o Pitch Deck Completo:** [**Apresentação Executiva em PDF (15 Slides)**](Docs/AWS_Serverless_Architecture_Blueprint.pdf) — *Material visual detalhando a anatomia da arquitetura 100% serverless, fluxo de CORS (preflight).
+
+### Otimização de Warm Starts no AWS Lambda
+
+Em cargas orientadas a eventos, instanciar clientes do SDK (`boto3.resource('dynamodb')`) dentro da função `lambda_handler` penaliza cada execução com tempo extra de inicialização.
+
+Ao declarar o cliente e a referência da tabela no **escopo global** (fora do *handler*), o ambiente de execução da Lambda reaproveita a conexão nas invocações subsequentes (**Warm Starts**), reduzindo a latência de resposta e o custo cobrado por milissegundo. O nome da tabela é lido via **variável de ambiente**, evitando valores fixos (*hardcoded*) no código:
+
+```python
+import os
+import boto3
+
+# Inicialização fora do handler: reaproveitada em Warm Starts
+dynamodb = boto3.resource("dynamodb")
+TABELA_NOME = os.environ["TABELA_NOME"]
+tabela = dynamodb.Table(TABELA_NOME)
+
+def lambda_handler(event, context):
+    # Roteamento: POST /resultado, GET /ranking, GET /jogador/{nome}
+    ...
+```
+
+*(Trecho simplificado do código completo disponível no repositório.)*
 ---
 
 ## 📋 Descrição Didática do Desafio
@@ -115,10 +137,12 @@ graph LR
 ## 🛠️ Serviços AWS Utilizados
 
 - **Amazon S3:** Hospedagem de site estático (*Static Website Hosting*) com política de bucket para leitura pública (`s3:GetObject`) entregando o frontend em HTML5, CSS3 e JavaScript puro.
-- **Amazon API Gateway:** API REST Regional (`prod`) com suporte a **CORS** e **Integração de Proxy do Lambda** expondo três endpoints:
-  - `POST /resultado` — Registra a pontuação, tentativas e tempo da partida.
-  - `GET /ranking` — Consulta e ordena o Top 10 melhores pontuações.
-  - `GET /jogador/{nome}` — Busca o histórico de partidas de um jogador específico usando parâmetro de caminho dinâmico.
+
+- ### Integração Proxy e a Dança do CORS no API Gateway
+A API REST Regional expõe três endpoints: `POST /resultado`, `GET /ranking` e `GET /jogador/{nome}`.
+
+O frontend hospedado em `*.s3-website-sa-east-1.amazonaws.com` consome a API em `*.execute-api.sa-east-1.amazonaws.com`. Por serem origens distintas, o navegador dispara uma requisição de verificação (*Preflight* `OPTIONS`) antes do **`POST` com corpo JSON** que envia os dados da partida. Com **Lambda Proxy Integration**, o API Gateway repassa a requisição bruta para a função, exigindo que o próprio código Python devolva explicitamente os cabeçalhos `Access-Control-Allow-Origin` em todas as respostas HTTP.
+
 - **AWS Lambda:** Função em **Python 3.12** utilizando `boto3` para validação de payload, geração de identificadores (`UUIDv4` e hash `MD5` para `playerId`) e operações no DynamoDB.
 - **Amazon DynamoDB:** Tabela NoSQL em modo **On-Demand** utilizando chave primária composta:
   - **Partition Key (`playerId`):** Hash MD5 do nome do jogador (distribuição uniforme de partições).
@@ -256,6 +280,9 @@ Durante a implantação e os testes de integração ponta a ponta, foram diagnos
 
 ## ✅ Conclusão
 
-A arquitetura *serverless* implantada utilizando **Amazon S3**, **Amazon API Gateway**, **AWS Lambda** e **Amazon DynamoDB** atendeu integralmente aos requisitos funcionais e não funcionais do desafio, proporcionando escalabilidade automática, alta disponibilidade nativa e otimização máxima de custos. O projeto consolida os fundamentos práticos exigidos para a certificação **AWS Certified Solutions Architect — Associate (SAA-C03)** e segue os pilares do **AWS Well-Architected Framework**.
+O código-fonte, os Registros de Decisão de Arquitetura (ADRs), a autoavaliação nos pilares do **AWS Well-Architected Framework** e a apresentação executiva estão disponíveis no repositório aberto:
 
+* **Repositório no GitHub:** [github.com/uvsanto/jogo-da-memoria-serverless-aws](https://github.com/uvsanto/jogo-da-memoria-serverless-aws)
+
+> *Nota: O ambiente AWS utilizado neste laboratório era temporário e já foi 100% desprovisionado após a validação e coleta das evidências.*
 
